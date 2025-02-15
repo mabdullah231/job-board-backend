@@ -23,6 +23,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'user_type' => $request->userType,
         ]);
 
         $this->sendCode($user->id);
@@ -85,18 +86,6 @@ class AuthController extends Controller
     }
 
 
-    public function redirectToGoogle()
-    {
-        return Socialite::driver('google')->with(['access_type' => 'offline', 'prompt' => 'consent'])->redirect();
-    }
-
-    public function handleGoogleCallback()
-    {
-        $googleUser = Socialite::driver('google')->stateless()->user();
-        $user = User::firstOrCreate(['email' => $googleUser->email], ['name' => $googleUser->name, 'password' => bcrypt(12345678), 'google_id' => $googleUser->id]);
-        Auth::login($user, true);
-        return redirect('/');
-    }
 
     public function forgotPassword(Request $request)
     {

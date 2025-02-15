@@ -41,12 +41,15 @@ Route::prefix('company')->group(function () {
     Route::get('/all', [CompanyController::class, 'getAllCompanies']);
 });
 
-// Category Routes
-Route::prefix('category')->group(function () {
-    Route::post('/manage', [CategoryController::class, 'manageCategory']);
-    Route::delete('/delete/{id}', [CategoryController::class, 'deleteCategory']);
-    Route::get('/get/{id}', [CategoryController::class, 'getCategory']);
-    Route::get('/all', [CategoryController::class, 'getAllCategories']);
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+
+    Route::prefix('category')->group(function () {
+        Route::post('/manage', [CategoryController::class, 'manageCategory']);
+        Route::delete('/delete/{id}', [CategoryController::class, 'deleteCategory']);
+        Route::get('/get/{id}', [CategoryController::class, 'getCategory']);
+        Route::get('/all', [CategoryController::class, 'getAllCategories']);
+    });
+
 });
 
 // JobPost Routes
