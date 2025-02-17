@@ -69,6 +69,10 @@ class AuthController extends Controller
                 Auth::logout();
                 return response()->json(['message' => 'Verify your email.', 'code' => 'EMAIL_NOT_VERIFIED'], 422);
             }
+            if (!$user->is_active) {
+                Auth::logout(); // Log out the user
+                return response()->json(['message' => 'Contact admin, your account is inactive.'], 403);
+            }
             $token = $user->createToken('user_token')->plainTextToken;
             return response()->json(['message' => 'Logged in.', 'user' => $user, 'token' => $token], 200);
         }

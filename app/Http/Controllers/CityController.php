@@ -10,11 +10,11 @@ class CityController extends Controller
     public function manageCity(Request $request)
     {
         $request->validate([
-            'city' => 'required|string|max:100',
+            'name' => 'required|string|max:100',
         ]);
 
         $city = $request->id ? City::find($request->id) : new City;
-        $city->city = $request->city;
+        $city->city = $request->name;
         $city->save();
 
         return response()->json($city, 201);

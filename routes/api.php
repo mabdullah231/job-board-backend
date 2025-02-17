@@ -8,6 +8,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\JobTagController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SavedJobController;
 use App\Http\Controllers\SkillController;
@@ -50,6 +51,35 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get('/all', [CategoryController::class, 'getAllCategories']);
     });
 
+    Route::prefix('skill')->group(function () {
+        Route::post('/manage', [SkillController::class, 'manageSkill']);
+        Route::delete('/delete/{id}', [SkillController::class, 'deleteSkill']);
+        Route::get('/get/{id}', [SkillController::class, 'getSkill']);
+        Route::get('/all', [SkillController::class, 'getAllSkills']);
+    });
+
+    Route::prefix('tag')->group(function () {
+        Route::post('/manage', [TagController::class, 'manageTag']);
+        Route::delete('/delete/{id}', [TagController::class, 'deleteTag']);
+        Route::get('/get/{id}', [TagController::class, 'getTag']);
+        Route::get('/all', [TagController::class, 'getAllTags']);
+    });
+    
+    // City Routes
+    Route::prefix('city')->group(function () {
+        Route::post('/manage', [CityController::class, 'manageCity']);
+        Route::delete('/delete/{id}', [CityController::class, 'deleteCity']);
+        Route::get('/get/{id}', [CityController::class, 'getCity']);
+        Route::get('/all', [CityController::class, 'getAllCities']);
+    });
+
+    Route::prefix('userdata')->group(function () {
+        Route::get('/get/{id}', [UserController::class, 'getUser']); // Get single user with company
+        Route::get('/get-all', [UserController::class, 'getAllUsers']); // Get all users with companies
+        Route::put('/toggle-status/{id}', [UserController::class, 'toggleUserStatus']); // Activate/Deactivate user
+        // Route::delete('/delete/{id}', [UserController::class, 'deleteUser']); // Delete user
+    });
+
 });
 
 // JobPost Routes
@@ -61,12 +91,7 @@ Route::prefix('jobpost')->group(function () {
 });
 
 // Skill Routes
-Route::prefix('skill')->group(function () {
-    Route::post('/manage', [SkillController::class, 'manageSkill']);
-    Route::delete('/delete/{id}', [SkillController::class, 'deleteSkill']);
-    Route::get('/get/{id}', [SkillController::class, 'getSkill']);
-    Route::get('/all', [SkillController::class, 'getAllSkills']);
-});
+
 
 // JobApplication Routes
 Route::prefix('jobapplication')->group(function () {
@@ -76,20 +101,7 @@ Route::prefix('jobapplication')->group(function () {
     Route::get('/all', [JobApplicationController::class, 'getAllJobApplications']);
 });
 
-Route::prefix('tag')->group(function () {
-    Route::post('/manage', [TagController::class, 'manageTag']);
-    Route::delete('/delete/{id}', [TagController::class, 'deleteTag']);
-    Route::get('/get/{id}', [TagController::class, 'getTag']);
-    Route::get('/all', [TagController::class, 'getAllTags']);
-});
 
-// City Routes
-Route::prefix('city')->group(function () {
-    Route::post('/manage', [CityController::class, 'manageCity']);
-    Route::delete('/delete/{id}', [CityController::class, 'deleteCity']);
-    Route::get('/get/{id}', [CityController::class, 'getCity']);
-    Route::get('/all', [CityController::class, 'getAllCities']);
-});
 
 // JobTag Routes
 Route::prefix('jobtag')->group(function () {
