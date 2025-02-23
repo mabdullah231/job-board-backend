@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
-            'jobPoster' => \App\Http\Middleware\JobPosterMiddleware::class,
+            'employer' => \App\Http\Middleware\JobPosterMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('user_type', [0, 1, 2])->default(2)->comment('0: Admin, 1: Job Poster, 2: Job Seeker');
+            $table->enum('user_type', [0, 1, 2])->default(2)->comment('0: Admin, 1: Employer, 2: Job Seeker');
             $table->unsignedInteger('code')->nullable()->comment('Registration verification code');
             $table->softDeletes();
         });

@@ -25,8 +25,13 @@ class JobPost extends Model {
         return $this->belongsTo(User::class);
     }
 
-    public function skills() {
-        return $this->belongsToMany(Skill::class, 'job_skills');
+    // public function skills() {
+    //     return $this->belongsToMany(Skill::class, 'job_skills');
+    // }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'job_skills', 'job_id', 'skill_id');
     }
 
     public function applications() {
@@ -36,4 +41,8 @@ class JobPost extends Model {
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+    public function tags()
+{
+    return $this->belongsToMany(Tag::class, 'job_tags', 'job_id', 'tag_id');
+}
 }

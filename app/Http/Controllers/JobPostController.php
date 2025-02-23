@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobPost;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class JobPostController extends Controller
 {
     public function manageJobPost(Request $request)
     {
+        $user = User::with('company')->find(Auth::id());
         $request->validate([
             'title' => 'required|string',
             'description' => 'required|string',
@@ -17,16 +21,25 @@ class JobPostController extends Controller
             'salary' => 'nullable|numeric',
             'deadline' => 'required|date',
             'category_id' => 'required|exists:categories,id',
-            'company_id' => 'required|exists:companies,id',
-            'user_id' => 'required|exists:users,id',
             'city_id' => 'required|exists:cities,id',
+            'tags' => 'array', // Ensure tags is an array
+            'tags.*' => 'exists:tags,id',
+            'skills' => 'array', // Ensure tags is an array
+            'skills.*' => 'exists:skills,id',
         ]);
 
         $jobPost = $request->id ? JobPost::find($request->id) : new JobPost;
-        $jobPost->fill($request->all());
+        $jobPost->fill($request->except('tags','skills'));
+        $jobPost->company_id = $user->company->id;
+        $jobPost->user_id = $user->id;
         $jobPost->save();
-
-        return response()->json($jobPost, 201);
+        if ($request->has('tags')) {
+            $jobPost->tags()->sync($request->tags); // Assuming a many-to-many relationship
+        }
+        if ($request->has('tags')) {
+            $jobPost->skills()->sync($request->skills); // Assuming a many-to-many relationship
+        }
+        return response()->json($user, 201);
     }
 
     public function deleteJobPost($id)
@@ -41,13 +54,21 @@ class JobPostController extends Controller
 
     public function getJobPost($id)
     {
-        $jobPost = JobPost::find($id);
+        $jobPost = JobPost::with('tags', 'skills', 'company', 'city', 'category')->find($id);
         return response()->json($jobPost);
     }
 
     public function getAllJobPosts()
     {
         $jobPosts = JobPost::all();
+        $jobPosts = JobPost::with('tags','skills','company','city','category')->get(); // Eager load tags
+        return response()->json($jobPosts);
+    }
+
+    public function getEmployerJobPosts()
+    {
+        $employer = Auth::id();
+        $jobPosts = JobPost::where('user_id', $employer)->with('tags','skills')->get();
         return response()->json($jobPosts);
     }
 }

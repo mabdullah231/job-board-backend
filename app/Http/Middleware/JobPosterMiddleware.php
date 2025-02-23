@@ -10,7 +10,7 @@ class JobPosterMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->user_type == 1) { // 1 = Job Poster
+        if (Auth::check() && Auth::user()->user_type == 1) { // 1 = Employer
             return $next($request);
         }
 

@@ -63,7 +63,9 @@ class AuthController extends Controller
         $request->validate(['email' => 'required|email', 'password' => 'required']);
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
+            // $user = Auth::user();
+            $user = User::with('company')->find(Auth::id());
+
             if (!$user->hasVerifiedEmail()) {
                 $this->sendCode($user->id);
                 Auth::logout();

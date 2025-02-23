@@ -38,7 +38,7 @@ class CategoryController extends Controller
 
     public function getAllCategories()
     {
-        $categories = Category::all();
+        $categories = Category::withCount('jobs')->get();
         return response()->json($categories);
-    }
+    }    
 }

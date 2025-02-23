@@ -30,6 +30,16 @@ Route::prefix('auth')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
+Route::prefix('data')->group(function () {
+    Route::get('city/all', [CityController::class, 'getAllCities']);
+    Route::get('category/all', [CategoryController::class, 'getAllCategories']);
+    Route::get('companies/all', [CompanyController::class, 'getAllCompanies']);
+    Route::get('tags/all', [TagController::class, 'getAllTags']);
+    Route::get('skills/all', [SkillController::class, 'getAllSkills']);
+    Route::get('jobpost/all', [JobPostController::class, 'getAllJobPosts']);
+    Route::get('jobpost/{id}', [JobPostController::class, 'getJobPost']);
+});
+
 // Protected Routes (Require Authentication)
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -39,7 +49,7 @@ Route::prefix('company')->group(function () {
     Route::post('/manage', [CompanyController::class, 'manageCompany']);
     Route::delete('/delete/{id}', [CompanyController::class, 'deleteCompany']);
     Route::get('/get/{id}', [CompanyController::class, 'getCompany']);
-    Route::get('/all', [CompanyController::class, 'getAllCompanies']);
+    // Route::get('/all', [CompanyController::class, 'getAllCompanies']);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
@@ -82,13 +92,28 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
 });
 
-// JobPost Routes
-Route::prefix('jobpost')->group(function () {
-    Route::post('/manage', [JobPostController::class, 'manageJobPost']);
-    Route::delete('/delete/{id}', [JobPostController::class, 'deleteJobPost']);
-    Route::get('/get/{id}', [JobPostController::class, 'getJobPost']);
-    Route::get('/all', [JobPostController::class, 'getAllJobPosts']);
+Route::middleware(['auth:sanctum', 'employer'])->prefix('employer')->group(function () {
+
+    Route::prefix('jobpost')->group(function () {
+        Route::get('/all', [JobPostController::class, 'getEmployerJobPosts']);
+    });
+
+    Route::prefix('company')->group(function () {
+        Route::post('/manage', [CompanyController::class, 'manageCompany']);
+        Route::delete('/delete/{id}', [CompanyController::class, 'deleteCompany']);
+        Route::get('/get', [CompanyController::class, 'getCompany']);
+        // Route::get('/all', [CompanyController::class, 'getAllCompanies']);
+    });
+    
+    Route::prefix('jobpost')->group(function () {
+        Route::post('/manage', [JobPostController::class, 'manageJobPost']);
+        Route::delete('/delete/{id}', [JobPostController::class, 'deleteJobPost']);
+        Route::get('/get/{id}', [JobPostController::class, 'getJobPost']);
+        Route::get('/all/{id}', [JobPostController::class, 'getAllJobPosts']);
+    });
 });
+
+// JobPost Routes
 
 // Skill Routes
 
