@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SavedJobController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserSkillController;
 
@@ -43,6 +44,15 @@ Route::prefix('data')->group(function () {
 // Protected Routes (Require Authentication)
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::prefix('jobapplication')->group(function () {
+        Route::get('/profile/all', [JobApplicationController::class, 'getUserJobApplications']);
+        Route::post('/manage', [JobApplicationController::class, 'manageJobApplication']);
+        Route::delete('/delete/{id}', [JobApplicationController::class, 'deleteJobApplication']);
+        Route::get('/get/{id}', [JobApplicationController::class, 'getJobApplication']);
+        Route::get('/all', [JobApplicationController::class, 'getAllJobApplications']);
+    });
+    
 });
 
 Route::prefix('company')->group(function () {
@@ -53,7 +63,7 @@ Route::prefix('company')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
-
+    Route::get('/stats', [StatsController::class, 'adminStats']);
     Route::prefix('category')->group(function () {
         Route::post('/manage', [CategoryController::class, 'manageCategory']);
         Route::delete('/delete/{id}', [CategoryController::class, 'deleteCategory']);
@@ -74,7 +84,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get('/get/{id}', [TagController::class, 'getTag']);
         Route::get('/all', [TagController::class, 'getAllTags']);
     });
-    
+
     // City Routes
     Route::prefix('city')->group(function () {
         Route::post('/manage', [CityController::class, 'manageCity']);
@@ -89,13 +99,18 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::put('/toggle-status/{id}', [UserController::class, 'toggleUserStatus']); // Activate/Deactivate user
         // Route::delete('/delete/{id}', [UserController::class, 'deleteUser']); // Delete user
     });
-
 });
 
 Route::middleware(['auth:sanctum', 'employer'])->prefix('employer')->group(function () {
 
+    Route::get('/stats', [StatsController::class, 'employerStats']);
     Route::prefix('jobpost')->group(function () {
         Route::get('/all', [JobPostController::class, 'getEmployerJobPosts']);
+    });
+    Route::prefix('jobapplication')->group(function () {
+        Route::get('/all', [JobApplicationController::class, 'getEmployerJobApplications']);
+        Route::get('/{id}', [JobApplicationController::class, 'getSingleEmployerJobApplication']);
+        Route::post('/update-status/{id}', [JobApplicationController::class, 'updateApplicationStatus']);
     });
 
     Route::prefix('company')->group(function () {
@@ -104,7 +119,7 @@ Route::middleware(['auth:sanctum', 'employer'])->prefix('employer')->group(funct
         Route::get('/get', [CompanyController::class, 'getCompany']);
         // Route::get('/all', [CompanyController::class, 'getAllCompanies']);
     });
-    
+
     Route::prefix('jobpost')->group(function () {
         Route::post('/manage', [JobPostController::class, 'manageJobPost']);
         Route::delete('/delete/{id}', [JobPostController::class, 'deleteJobPost']);
@@ -119,12 +134,7 @@ Route::middleware(['auth:sanctum', 'employer'])->prefix('employer')->group(funct
 
 
 // JobApplication Routes
-Route::prefix('jobapplication')->group(function () {
-    Route::post('/manage', [JobApplicationController::class, 'manageJobApplication']);
-    Route::delete('/delete/{id}', [JobApplicationController::class, 'deleteJobApplication']);
-    Route::get('/get/{id}', [JobApplicationController::class, 'getJobApplication']);
-    Route::get('/all', [JobApplicationController::class, 'getAllJobApplications']);
-});
+
 
 
 
@@ -167,4 +177,3 @@ Route::prefix('applicationfile')->group(function () {
     Route::get('/get/{id}', [ApplicationFileController::class, 'getApplicationFile']);
     Route::get('/all', [ApplicationFileController::class, 'getAllApplicationFiles']);
 });
-

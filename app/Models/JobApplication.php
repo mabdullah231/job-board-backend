@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class JobApplication extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['cover_letter', 'status', 'user_id', 'job_id'];
+    protected $fillable = ['name','email','cover_letter', 'status', 'user_id', 'job_id'];
 
     public function user()
     {
@@ -21,8 +21,8 @@ class JobApplication extends Model
         return $this->belongsTo(JobPost::class);
     }
 
-    public function files()
+    public function file()
     {
-        return $this->hasMany(ApplicationFile::class);
+        return $this->hasOne(ApplicationFile::class, 'application_id','id');
     }
 }
